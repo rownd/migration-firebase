@@ -15,3 +15,5 @@ cd server
 npm install
 npm run dev
 ```
+
+![Screenshot](signInScreen.png)
