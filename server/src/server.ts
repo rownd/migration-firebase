@@ -1,10 +1,11 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import admin from 'firebase-admin';
-import { getAuth, DecodedIdToken, UserRecord } from 'firebase-admin/auth';
+import { getAuth, DecodedIdToken } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 
-var serviceAccount = require('../fir-auth-c80a9-firebase-adminsdk-pfj4x-013b53f096.json');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const serviceAccount = require('../fir-auth-c80a9-firebase-adminsdk-pfj4x-013b53f096.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
@@ -15,6 +16,7 @@ const app = express();
 const PORT = 3124;
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       userId?: string;
