@@ -9,8 +9,9 @@ import {
   isSignInWithEmailLink,
   signInWithEmailLink
 } from 'firebase/auth';
-import { auth } from './firebase';
-import axios from 'axios';
+import { auth } from "./firebase";
+import axios from "axios";
+import Todo from "./Todo";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -41,7 +42,7 @@ function App() {
   const fetchUserData = async () => {
     try {
       const token = await auth.currentUser?.getIdToken();
-      const res = await axios.get('http://localhost:3124/user', {
+      const res = await axios.get("http://localhost:3124/user", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -81,7 +82,7 @@ function App() {
   }
 
   return (
-    <div>
+    <>
       {user ? (
         <>
           Logged in: <strong>{user.email}</strong>
@@ -89,6 +90,8 @@ function App() {
             <pre>{JSON.stringify(response, null, 2)}</pre>
           </div>
           <button onClick={() => auth.signOut()}>Sign out</button>
+          <hr />
+          <Todo user={user} />
         </>
       ) : (
         <>
@@ -107,7 +110,7 @@ function App() {
           </div>
         </>
       )}
-    </div>
+    </>
   );
 }
 

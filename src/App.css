@@ -1,4 +1,5 @@
 #root {
+  width: 70%;
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -7,6 +8,8 @@
 
 .card {
   padding: 2em;
+  max-width: 420px;
+  margin: 0 auto;
 }
 
 form {
@@ -21,3 +24,68 @@ input {
   padding: 12px;
 }
 
+.todo-container {
+  text-align: left;
+}
+
+.todo-container form {
+  display: block;
+}
+
+.todo {
+  margin: 3rem auto 0 auto;    
+}
+
+.header {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.input-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.input-container input {
+  width: 100%;
+  border: none;
+}
+
+.btn {
+  padding: 10px 1rem;
+  background: #334;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.btn-delete {
+  background: rgba(255, 0, 0, 0.5);
+}
+
+.todo-content {
+  margin-top: 2rem;
+}
+
+.todo-content ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.todo-content ul li {
+  display: flex;
+  flex: 1;
+  padding: 0.6rem;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.todo-content ul li:nth-child(odd) {
+  background: #343434;
+}
