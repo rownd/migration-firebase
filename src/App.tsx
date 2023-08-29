@@ -1,28 +1,42 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import { User } from 'firebase/auth';
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  UserCredential,
-  signInWithPopup,
+  signInWithRedirect,
   GoogleAuthProvider,
-  signInAnonymously
+  signInAnonymously,
+  User,
+  sendSignInLinkToEmail,
+  isSignInWithEmailLink,
+  signInWithEmailLink
 } from 'firebase/auth';
 import { auth } from './firebase';
 import axios from 'axios';
 
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
 
 function App() {
   const [user, setUser] = useState<null | User>(auth.currentUser);
   const [response, setResponse] = useState<null | Record<string, unknown>>(
     null
   );
+  const [verifyEmail, setVerifyEmail] = useState(false);
 
   auth.onAuthStateChanged((user) => {
-    setUser(user || null);
+    if (!user) {
+      setUser(null);
+      setResponse(null);
+      setVerifyEmail(false);
+      return;
+    }
+
+    setUser(user);
   });
+
+  if (isSignInWithEmailLink(auth, window.location.href)) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+    signInWithEmailLink(auth, email || '', window.location.href)
+  }
 
   const fetchUserData = async () => {
     try {
@@ -44,10 +58,10 @@ function App() {
     }
   }, [user?.uid]);
 
-  const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEmailSignInLink = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    const formData: { email?: string; password?: string } = Object.fromEntries(
+    const formData: { email?: string; } = Object.fromEntries(
       new FormData(
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -55,55 +69,16 @@ function App() {
       )
     );
 
-    createUserWithEmailAndPassword(
-      auth,
-      formData?.email || '',
-      formData?.password || ''
-    )
-      .then((userCredential: UserCredential) => {
-        console.log({ userCredential });
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log({ errorCode, errorMessage });
-      });
-  };
-
-  const handleSignIn = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const formData: { email?: string; password?: string } = Object.fromEntries(
-      new FormData(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        e.target
-      )
-    );
-
-    signInWithEmailAndPassword(
-      auth,
-      formData?.email || '',
-      formData?.password || ''
-    )
-      .then((userCredential: UserCredential) => {
-        console.log({ userCredential });
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log({ errorCode, errorMessage });
-      });
-  };
-
-  const handleGoogleSignUp = async () => {
-    try {
-      const userCredential = await signInWithPopup(auth, provider);
-      console.log({ userCredential });
-    } catch (err) {
-      console.log({ err });
-    }
-  };
+    sendSignInLinkToEmail(auth, formData?.email || '', {
+      url: `http://localhost:5173?email=${formData.email}`,
+      handleCodeInApp: true
+    }).then((res) => {
+      setVerifyEmail(true);
+      console.log({res})
+    }).catch((err) => {
+      console.log({err})
+    })
+  }
 
   return (
     <div>
@@ -119,23 +94,16 @@ function App() {
         <>
           <h1>Sign-in or sign-up</h1>
           <div className="card">
-            <button onClick={() => handleGoogleSignUp()}>
+            <button onClick={() => signInWithRedirect(auth, googleProvider)}>
               Sign in with Google
             </button>
             <button onClick={() => signInAnonymously(auth)}>
               Sign in Anonymously
             </button>
-            <form onSubmit={(e) => handleSignUp(e)}>
+            {verifyEmail ? <h3>Verify your email...</h3> : <form onSubmit={(e) => handleEmailSignInLink(e)}>
               <input type="email" name="email" placeholder="Email" />
-              <input type="text" name="password" placeholder="****" />
-              <input type="submit" value="Sign up" />
-            </form>
-            <div>Or</div>
-            <form onSubmit={(e) => handleSignIn(e)}>
-              <input type="email" name="email" placeholder="Email" />
-              <input type="text" name="password" placeholder="****" />
-              <input type="submit" value="Sign in" />
-            </form>
+              <input type="submit" value="Sign in or sign up" />
+            </form>}
           </div>
         </>
       )}

@@ -11,6 +11,7 @@ admin.initializeApp({
 });
 
 const db = getFirestore();
+const auth = getAuth();
 
 const app = express();
 const PORT = 3124;
@@ -38,7 +39,7 @@ const authMiddleware = async (
   try {
     // Get bearer token
     const token = authorization.substring(7, authorization.length);
-    const decodedToken = await getAuth().verifyIdToken(token);
+    const decodedToken = await auth.verifyIdToken(token);
     req.userId = decodedToken?.uid;
     req.decodedToken = decodedToken;
 
