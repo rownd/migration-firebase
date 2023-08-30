@@ -1,20 +1,20 @@
 import { useState } from 'react';
-import './App.css';
+import '../App.css';
 import {
   signInWithRedirect,
   GoogleAuthProvider,
   signInAnonymously,
   User,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { auth } from "./firebase";
-import Todo from "./Todo";
+import { auth } from "../firebase";
+import Todo from "../Todo";
 import { toast } from 'react-toastify';
 
 const googleProvider = new GoogleAuthProvider();
 
-function App() {
+function FirebaseAuth() {
   const [user, setUser] = useState<null | User>(auth.currentUser);
 
   auth.onAuthStateChanged((user) => {
@@ -78,7 +78,7 @@ function App() {
           Logged in: <strong>{user.email || 'Anonymous'}</strong>
           <button onClick={() => auth.signOut()}>Sign out</button>
           <hr />
-          <Todo user={user} />
+          <Todo userId={user.uid} />
         </>
       ) : (
         <>
@@ -108,4 +108,4 @@ function App() {
   );
 }
 
-export default App;
+export default FirebaseAuth;

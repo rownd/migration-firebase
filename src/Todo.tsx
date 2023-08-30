@@ -14,20 +14,19 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { User } from "firebase/auth";
 import { db } from "./firebase";
 
 type TodoProperties = {
-  user: User | null;
+  userId: string;
 };
 
-const Todo = ({ user }: TodoProperties) => {
+const Todo = ({ userId }: TodoProperties) => {
   const [todos, setTodos] = useState<Record<string, string>[]>([]);
   const [todo, setTodo] = useState("");
 
   const fetchTodos = useCallback(async () => {
     getDocs(
-      query(collection(db, "todos"), where("author", "==", user?.uid))
+      query(collection(db, "todos"), where("author", "==", userId))
     ).then((querySnapshot) => {
       const newData = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
@@ -36,7 +35,7 @@ const Todo = ({ user }: TodoProperties) => {
       setTodos(newData);
       console.log(newData);
     });
-  }, [user?.uid]);
+  }, [userId]);
 
   useEffect(() => {
     fetchTodos();
@@ -49,7 +48,7 @@ const Todo = ({ user }: TodoProperties) => {
       try {
         const docRef = await addDoc(collection(db, "todos"), {
           todo: todo,
-          author: user?.uid,
+          author: userId,
         });
         console.log("Document written with ID: ", docRef.id);
         setTodo("");
@@ -58,7 +57,7 @@ const Todo = ({ user }: TodoProperties) => {
         console.error("Error adding document: ", e);
       }
     },
-    [fetchTodos, todo, user?.uid]
+    [fetchTodos, todo, userId]
   );
 
   const deleteTodo = useCallback(
