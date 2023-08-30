@@ -17,7 +17,7 @@ import {
 import { db } from "./firebase";
 
 type TodoProperties = {
-  userId: string;
+  userId?: string;
 };
 
 const Todo = ({ userId }: TodoProperties) => {
