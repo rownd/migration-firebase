@@ -121,24 +121,24 @@ function App() {
         </>
       ) : (
         <>
-          <h1>Firebase migration</h1>
           <div className="card">
-            <button onClick={() => signInWithRedirect(auth, googleProvider)}>
+            <h2>Firebase migration</h2>
+            <button style={{width: '100%'}} onClick={() => signInWithRedirect(auth, googleProvider)}>
               Sign in with Google
             </button>
-            <button onClick={() => signInAnonymously(auth)}>
+            <button style={{width: '100%'}} onClick={() => signInAnonymously(auth)}>
               Sign in Anonymously
             </button>
             <form onSubmit={(e) => handleSignUp(e)}>
               <input type="email" name="email" placeholder="Email" />
               <input type="text" name="password" placeholder="****" />
-              <input type="submit" value="Sign up" />
+              <button style={{width: '100%'}} type='submit'>Sign up</button>
             </form>
             <div>Or</div>
             <form onSubmit={(e) => handleSignIn(e)}>
               <input type="email" name="email" placeholder="Email" />
               <input type="text" name="password" placeholder="****" />
-              <input type="submit" value="Sign in" />
+              <button style={{width: '100%'}} type='submit'>Sign in</button>
             </form>
           </div>
         </>
