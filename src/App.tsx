@@ -1,16 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './App.css';
 import {
   signInWithRedirect,
   GoogleAuthProvider,
   signInAnonymously,
   User,
-  UserCredential,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword
 } from 'firebase/auth';
 import { auth } from "./firebase";
-import axios from "axios";
 import Todo from "./Todo";
 import { toast } from 'react-toastify';
 
@@ -18,40 +16,10 @@ const googleProvider = new GoogleAuthProvider();
 
 function App() {
   const [user, setUser] = useState<null | User>(auth.currentUser);
-  const [response, setResponse] = useState<null | Record<string, unknown>>(
-    null
-  );
 
   auth.onAuthStateChanged((user) => {
-    if (!user) {
-      setUser(null);
-      setResponse(null);
-      return;
-    }
-
-    setUser(user);
+    setUser(user || null);
   });
-
-  const fetchUserData = async () => {
-    try {
-      const token = await auth.currentUser?.getIdToken();
-      const res = await axios.get("http://localhost:3124/user", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setResponse(res?.data);
-    } catch (err) {
-      toast.error('Error fetching user data')
-      console.log({ err });
-    }
-  };
-
-  useEffect(() => {
-    if (user?.uid) {
-      fetchUserData();
-    }
-  }, [user?.uid]);
 
   const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,13 +37,11 @@ function App() {
       formData?.email || '',
       formData?.password || ''
     )
-      .then((userCredential: UserCredential) => {
-        console.log({ userCredential });
+      .then((userCredential) => {
+        console.log(`Successfully created a new user ${userCredential}`);
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log({ errorCode, errorMessage });
+        console.log({ error });
         toast.error('Error with sign up. Please try again')
       });
   };
@@ -96,13 +62,11 @@ function App() {
       formData?.email || '',
       formData?.password || ''
     )
-      .then((userCredential: UserCredential) => {
-        console.log({ userCredential });
+      .then((userCredential) => {
+        console.log(`Successfully signed in a user ${userCredential}`);
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log({ errorCode, errorMessage });
+        console.log({ error });
         toast.error('Error with sign in. Please try again')
       });
   };
@@ -111,10 +75,7 @@ function App() {
     <>
       {user ? (
         <>
-          Logged in: <strong>{user.email}</strong>
-          <div>
-            <pre>{JSON.stringify(response, null, 2)}</pre>
-          </div>
+          Logged in: <strong>{user.email || 'Anonymous'}</strong>
           <button onClick={() => auth.signOut()}>Sign out</button>
           <hr />
           <Todo user={user} />

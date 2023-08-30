@@ -2,20 +2,20 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyAX-w0V-fl7xj91UWttHN79ngUssyJBBO8",
-  authDomain: "fir-auth-c80a9.firebaseapp.com",
-  projectId: "fir-auth-c80a9",
-  storageBucket: "fir-auth-c80a9.appspot.com",
-  messagingSenderId: "1035238278305",
-  appId: "1:1035238278305:web:5b7ef4529e814ac4485ce0",
-  measurementId: "G-WC2Y5R9C3R"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSENGER_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
+
+if (!firebaseConfig.apiKey) {
+  throw Error("Please provide credentials for your firebaseConfig in ./firebase.ts file")
+}
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
