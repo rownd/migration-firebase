@@ -10,7 +10,9 @@ import {
 } from 'firebase/auth';
 import { auth } from "../firebase";
 import Todo from "../Todo";
-import { toast } from 'react-toastify';
+
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -104,6 +106,7 @@ function FirebaseAuth() {
           </div>
         </>
       )}
+      <ToastContainer />
     </>
   );
 }
