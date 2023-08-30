@@ -20,7 +20,7 @@ function App() {
 
   useEffect(() => {
     if (!is_authenticated && !is_initializing && typeof isSignedInFirebaseUser === 'boolean') {
-        // Convert an already signed in Firebase user into a Rownd user.
+        // Convert a signed in Firebase user into a Rownd user.
         if (isSignedInFirebaseUser) {
             auth.currentUser?.getIdToken().then((idToken) => {
                 getAccessToken({ token: idToken })
