@@ -1,33 +1,29 @@
-import { useEffect, useState } from 'react';
-import { User } from 'firebase/auth';
-
-import FirebaseAuth from './FirebaseAuth/FirebaseAuth';
-import { auth } from './firebase';
+import { useEffect } from 'react';
 import Todo from './Todo';
 import './App.css';
+import { useRownd } from '@rownd/react';
 
 function App() {
-  const [user, setUser] = useState<null | User>(auth.currentUser);
+  const { is_authenticated, is_initializing, requestSignIn, user, signOut } = useRownd();
+
   useEffect(() => {
-    const listener = auth.onAuthStateChanged((user) => {
-      setUser(user || null);
-    });
+    if (!is_authenticated && !is_initializing) {
+        requestSignIn({ 
+            prevent_closing: true,
+        })
+    }
+  }, [is_authenticated, is_initializing, requestSignIn])
 
-    return () => {
-      listener();
-    };
-  }, []);
-
-  if (!user) {
-    return <FirebaseAuth />;
+  if (is_initializing) {
+    return <h2>Loading...</h2>
   }
 
   return (
     <>
-      Logged in: <strong>{user?.email || 'Anonymous'}</strong>
-      <button onClick={() => auth.signOut()}>Sign out</button>
+      Logged in: <strong>{user.data?.email || 'Anonymous'}</strong>
+      <button onClick={() => signOut()}>Sign out</button>
       <hr />
-      <Todo userId={user.uid} />
+      <Todo userId={user.data?.id} />
     </>
   );
 }
