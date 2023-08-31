@@ -10,7 +10,10 @@ All the code changes made to migrate this sample app from Firebase authenticatio
 
 ### Migrating React code from Firebase authentication to Rownd
 
-1. Remove any Firebase UI related code.
+1. Install Rownd
+```
+npm install @rownd/react
+```
 
 2. Add Rownd to main entrypoint:
 ```jsx
