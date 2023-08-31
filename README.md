@@ -8,7 +8,7 @@ All the code changes made to migrate this sample app from Firebase authenticatio
 - Steps required for migration from Firebase authentication to Rownd. [https://docs.rownd.io/migration/firebase](https://docs.rownd.io/migration/firebase)
 - Rownd's React SDK. [https://github.com/rownd/react](https://github.com/rownd/react)
 
-### Migrating React code
+### Migrating React code from Firebase authentication to Rownd
 
 1. Remove any Firebase UI related code.
 
@@ -49,7 +49,7 @@ useEffect(() => {
 ```
 
 ### Keep Firebase users signed in
-Keep Firebase users signed into Rownd. Send the Firebase `idToken` to Rownd using `getAccessToken`
+Keep Firebase users signed in when migrating to Rownd. Send the Firebase `idToken` to Rownd using `getAccessToken`
 
 ```jsx
 import { useRownd } from '@rownd/react';
