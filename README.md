@@ -93,3 +93,24 @@ useEffect(() => {
   return (...)
 }
 ```
+
+### Stay signed into Firebase authentication with Rownd
+Stay signed into Firebase authentication with Rownd to continue to use Firestore and Firebase Realtime Database.
+
+```jsx
+import { signInWithCustomToken } from 'firebase/auth';
+
+export default function MyProtectedComponent(props) {
+  useEffect(() => {
+    (async () => {
+      if (is_authenticated) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const firebaseToken = await (window as any).rownd.firebase.getIdToken();
+        signInWithCustomToken(auth, firebaseToken);
+      }
+    })();
+  }, [is_authenticated]);
+
+  return (...)
+}
+```
