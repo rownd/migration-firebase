@@ -8,6 +8,7 @@ import { signInWithCustomToken } from 'firebase/auth';
 function App() {
   const { is_authenticated, is_initializing, requestSignIn, user, signOut, getAccessToken } = useRownd();
   const [isSignedInFirebaseUser, setIsSignedInFirebaseUser] = useState<boolean | undefined>(undefined);
+  const [firebaseToken, setFirebaseToken] = useState<string | null>(null);
 
   useEffect(() => {
     const listener = auth.onAuthStateChanged((user) => {
@@ -27,11 +28,11 @@ function App() {
                 getAccessToken({ token: idToken })
             })
             return;
-        }
-
+        } else {
         requestSignIn({ 
             prevent_closing: true,
-        })
+        });
+      }
     }
   }, [is_authenticated, is_initializing, requestSignIn, getAccessToken, isSignedInFirebaseUser]);
 
@@ -41,6 +42,7 @@ function App() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const firebaseToken = await (window as any).rownd.firebase.getIdToken();
         signInWithCustomToken(auth, firebaseToken);
+        setFirebaseToken(firebaseToken);
       }
     })();
   }, [is_authenticated]);
@@ -51,7 +53,7 @@ function App() {
 
   return (
     <>
-      {is_authenticated && !is_initializing &&
+      {is_authenticated && !is_initializing && firebaseToken &&
         <>
           Logged in: <strong>{user.data?.email || 'Anonymous'}</strong>
           <button onClick={() => signOut()}>Sign out</button>
